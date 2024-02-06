@@ -1,13 +1,13 @@
 import { NBitArray, NBitMap, NBitNumber } from "./nbit.mjs"
 
-const Memory = NBitArray;
+export const Memory = NBitArray;
 
-const Registers = NBitMap
+export const Registers = NBitMap
 
-class PC extends NBitNumber {
+export class PC extends NBitNumber {
     #instruction_length
 
-    constructor({bits, instruction_length, inital_value=0}) {
+    constructor(bits, instruction_length, inital_value=0) {
         super(bits)
 
         this.set(value)

@@ -26,6 +26,14 @@ export class NBitNumber {
     set(value) {
         this.#value = value & this.#max
     }
+
+    /**
+     * Add to the current value
+     * @param {Number} value 
+     */
+    add(value) {
+        this.set(this.#value + value)
+    }
 }
 
 export class NBitArray {
@@ -77,13 +85,14 @@ export class NBitMap {
     #dict;
 
     /**
-     * @param {{}} dict 
+     * @param {String[]} dict 
      */
-    constructor(dict) {
+    constructor(bits, keys = []) {
         this.#dict = new Map();
 
-        for (const [key, value] of Object.entries(dict)) {
-            this.#dict.set(key, value)
+        for(let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            this.#dict.set(key, new NBitNumber(bits))
         }
     }
 
