@@ -10,10 +10,10 @@ The screen is 64x32 pixels, each time a sprite is drawn its pixels are XOR'd int
 
 ### Standard Chip-8 Instructions 
 - 00E0 - CLS ✅
-- 00EE - RET ❌
+- 00EE - RET ✅
 - 0nnn - SYS addr ✅
 - 1nnn - JP addr ✅
-- 2nnn - CALL addr ❌
+- 2nnn - CALL addr ✅
 - 3xkk - SE Vx, byte ✅
 - 4xkk - SNE Vx, byte ✅
 - 5xy0 - SE Vx, Vy ✅
@@ -33,17 +33,17 @@ The screen is 64x32 pixels, each time a sprite is drawn its pixels are XOR'd int
 - Bnnn - JP V0, addr ✅
 - Cxkk - RND Vx, byte ✅
 - Dxyn - DRW Vx, Vy, nibble ✅
-- Ex9E - SKP Vx
-- ExA1 - SKNP Vx
+- Ex9E - SKP Vx ✅
+- ExA1 - SKNP Vx ✅
 - Fx07 - LD Vx, DT ✅
-- Fx0A - LD Vx, K
+- Fx0A - LD Vx, K ✅
 - Fx15 - LD DT, Vx ✅
 - Fx18 - LD ST, Vx ✅
 - Fx1E - ADD I, Vx ✅
 - Fx29 - LD F, Vx ✅
 - Fx33 - LD B, Vx ✅
-- Fx55 - LD [I], Vx ✅ / ❌
-- Fx65 - LD Vx, [I] ✅ / ❌
+- Fx55 - LD [I], Vx ✅
+- Fx65 - LD Vx, [I] ✅ 
 
 ### Super Chip-48 Instructions
 - 00Cn - SCD nibble ❌
