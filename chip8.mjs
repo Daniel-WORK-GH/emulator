@@ -21,13 +21,17 @@ export class Chip8 {
          */
         this.I = 20;
 
+        this.DT = 21;
+        this.ST = 22;
+
         this.#registers = new Registers(16, [
             0, 1, 2, 3, 4, 5, 6,
             7, 8, 9, 10, 11, 12,
-            13, 14, 15, this.I
+            13, 14, 15, this.I, 
+            this.DT, this.ST
         ])
 
-        this.#pc = new PC(8, 2, 0xFF);
+        this.#pc = new PC(8, 2, 0x200);
     }
 
     #get_next_instructions() {
@@ -182,7 +186,84 @@ export class Chip8 {
                         break;
                 }
                 break;
+            
+            case 9: // 9xy0 - SNE Vx, Vy
+                var vx = this.#registers.get(nib2)
+                var vy = this.#registers.get(nib3)
 
+                if(vx != vy) this.#pc.inc()
+                break;
+
+            case 0xa: // Annn - LD I, addr
+                this.#registers.set(this.I, instruction & 0x0FFF)
+                break;
+
+            case 0xb: // Bnnn - JP V0, addr
+                var v0 = this.#registers.get(0)
+                this.#pc.set(instruction & 0x0FFF + v0)
+                break;
+
+            case 0xc: // Cxkk - RND Vx, byte
+                var vx = this.#registers.get(nib2)
+                const rnd = Math.floor(Math.random() * maxFloored);
+                
+                this.#registers.set(nib2, rnd & lower)
+                break;
+
+            case 0xF:
+                switch(lower) { 
+                    case 0x15: // Fx15 - LD DT, Vx
+                        var vx = this.#registers.get(nib2)
+                        this.#registers.set(this.DT, vx)
+                        break;
+
+                    case 0x18: // Fx18 - LD ST, Vx
+                        var vx = this.#registers.get(nib2)
+                        this.#registers.set(this.ST, vx)
+                        break;
+
+                    case 0x1e: // Fx1E - ADD I, Vx
+                        var vx = this.#registers.get(nib2)
+                        var i = this.#registers.get(this.I)
+
+                        this.#registers.set(this.I, vx + i)
+                        break;
+
+                    case 0x29: // Fx29 - LD F, Vx
+                        var vx = this.#registers.get(nib2)
+                        this.#registers.set(this.I, vx)
+                        
+                        console.error('Add font support');
+                        break;
+
+                    case 0x33:
+                        var i = this.#registers.get(this.I)
+
+                        this.#memory.set(i, nib2)
+                        this.#memory.set(i + 1, nib3)
+                        this.#memory.set(i + 2, nib4)
+                        break;
+
+                    case 0x55:
+                        var i = this.#registers.get(this.I)
+                        for(let r = 0; r < 16; r++) {
+                            var vr = this.#registers.get(r)
+                            this.#memory.set(i + r, vr)
+                        }
+                        console.warn('Might cause an error');
+                        break;
+
+                    case 0x65:
+                        var i = this.#registers.get(this.I)
+                        for(let r = 0; r < 16; r++) {
+                            var vr = this.#memory.get(i + r)
+                            this.#registers.set(r, vr)
+                        }
+                        console.warn('Might cause an error');
+                        break;
+                }
+
+                break;
         }
         this.#pc.inc()
     }
@@ -208,24 +289,24 @@ export class Chip8 {
 // 8xy6 - SHR Vx {, Vy} ✅
 // 8xy7 - SUBN Vx, Vy ✅
 // 8xyE - SHL Vx {, Vy} ✅
-// 9xy0 - SNE Vx, Vy
-// Annn - LD I, addr
-// Bnnn - JP V0, addr
-// Cxkk - RND Vx, byte
+// 9xy0 - SNE Vx, Vy ✅
+// Annn - LD I, addr ✅
+// Bnnn - JP V0, addr ✅
+// Cxkk - RND Vx, byte ✅
 // Dxyn - DRW Vx, Vy, nibble
 // Ex9E - SKP Vx
 // ExA1 - SKNP Vx
 // Fx07 - LD Vx, DT
 // Fx0A - LD Vx, K
-// Fx15 - LD DT, Vx
-// Fx18 - LD ST, Vx
-// Fx1E - ADD I, Vx
-// Fx29 - LD F, Vx
-// Fx33 - LD B, Vx
-// Fx55 - LD [I], Vx
-// Fx65 - LD Vx, [I]
+// Fx15 - LD DT, Vx ✅
+// Fx18 - LD ST, Vx ✅
+// Fx1E - ADD I, Vx ✅
+// Fx29 - LD F, Vx ✅
+// Fx33 - LD B, Vx ✅
+// Fx55 - LD [I], Vx ✅ / ❌
+// Fx65 - LD Vx, [I] ✅ / ❌
 // 3.2 - Super Chip-48 Instructions
-// 00Cn - SCD nibble
+// 00Cn - SCD nibble 
 // 00FB - SCR
 // 00FC - SCL
 // 00FD - EXIT
@@ -234,5 +315,5 @@ export class Chip8 {
 // Dxy0 - DRW Vx, Vy, 0
 // Fx30 - LD HF, Vx
 // Fx75 - LD R, Vx
-// Fx85 - LD Vx, R
+// Fx85 - LD Vx, R 
 //#endregion
