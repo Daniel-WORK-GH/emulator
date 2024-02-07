@@ -1,4 +1,5 @@
 import { Memory, PC, Registers } from "./components.mjs";
+import { getByteArray } from "./filereader.mjs";
 import { ChipScreen } from "./screen.mjs";
 
 export class Chip8 {
@@ -31,30 +32,44 @@ export class Chip8 {
             this.DT, this.ST
         ])
 
-        this.#pc = new PC(8, 2, 0x200);
+        this.#pc = new PC(16, 2, 0x200);
+
+        setInterval(() => {
+            ChipScreen.refresh()
+        }, 1 / 60 * 1000);
+    }
+
+    load_program(program) {
+        getByteArray(program, (array) => {
+            let addr = 0x200;
+
+            for(let i = 0; i < array.length; i++) {
+                this.#memory.set(addr + i, array[i])
+            }
+        })
     }
 
     #get_next_instructions() {
         const addr = this.#pc.get()
         const upper = this.#memory.get(addr)
         const lower = this.#memory.get(addr + 1)
-        const instruction = upper << 8 | lower
+        const instruction = (upper << 8) | lower
 
         return instruction;
     }
 
     run_instruction() {
         const instruction = this.#get_next_instructions()
-
+        
         // Get lower and upper bytes
         const upper = (instruction >> 8) & 0xFF 
         const lower = instruction & 0xFF 
 
         // Get instructions as nibbles
-        const nib1 = (instruction >> 12) & 0B1111
-        const nib2 = (instruction >> 8) & 0B1111
-        const nib3 = (instruction >> 4) & 0B1111
-        const nib4 = instruction & 0B1111
+        const nib1 = (instruction >> 12) & 0xf
+        const nib2 = (instruction >> 8) & 0xf
+        const nib3 = (instruction >> 4) & 0xf
+        const nib4 = instruction & 0xf
 
         if(instruction == 0x00e0) { // 00E0 - CLS
             ChipScreen.clear()
@@ -70,7 +85,7 @@ export class Chip8 {
             case 0: // 0nnn - SYS addr
             case 1: // 1nnn - JP addr
                 this.#pc.set(instruction & 0x0FFF)
-                break;
+                return;
 
             case 3: // 3xkk - SE Vx, byte
                 var vx = this.#registers.get(nib2)
@@ -212,13 +227,14 @@ export class Chip8 {
 
             case 0xd: // Dxyn - DRW Vx, Vy, nibble
                 var i = this.#registers.get(this.I)
+                var starti = i;
                 var vx = this.#registers.get(nib2)
                 var vy = this.#registers.get(nib3)
                 var erased = false;
 
-                for(; i < nib4; i++) {
+                for(; i < starti + nib4; i++) {
                     var byte = this.#memory.get(i)
-                    erased |= ChipScreen.drawByte(vx, vy + i, byte)
+                    erased |= ChipScreen.drawByte(vx, vy + i - starti, byte)
                 }
 
                 if(erased) this.#registers.set(15, 1)
@@ -283,15 +299,16 @@ export class Chip8 {
                         break;
 
                     default: 
-                        console.error('Unknown instruction');
+                        console.error('Unknown instruction : ' + instruction.toString(16));
                         break;
                 }
                 break;
 
             default: 
-                console.error('Unknown instruction');
+                console.error('Unknown instruction : ' + instruction.toString(16));
                 break;
         }
+
         this.#pc.inc()
     }
 }

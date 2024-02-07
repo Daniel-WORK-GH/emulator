@@ -7,10 +7,10 @@ export const Registers = NBitMap
 export class PC extends NBitNumber {
     #instruction_length
 
-    constructor(bits, instruction_length, inital_value=0) {
+    constructor(bits, instruction_length, inital_value = 0) {
         super(bits)
 
-        this.set(value)
+        this.set(inital_value)
 
         this.#instruction_length = instruction_length
     }

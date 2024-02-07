@@ -61,13 +61,15 @@ export class ChipScreen {
 
             this.#screen[y][x] = bit != this.#screen[y][x] ? 1 : 0; 
         }
+
+        return erased
     }
 
     static refresh() {
         for (let i = 0; i < this.#height; i++) {
             for(let j = 0; j < this.#width; j++) {
                 const pixel = this.#pixels[i][j];
-                pixel.style.backgroundColor = pixel == 1 ? 'white' : '#3d3d3d';
+                pixel.style.backgroundColor = this.#screen[i][j] == 1 ? 'white' : '#3d3d3d';
             } 
         }
     }

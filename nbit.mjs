@@ -52,9 +52,9 @@ export class NBitArray {
         this.#bits = bits
         this.#size = size
 
-        this.#array = new Array(size).fill(null).map(() => {
+        this.#array = new Array(size).fill(null).map(() => 
             new NBitNumber(bits)
-        })
+        )
     }
 
     /**
