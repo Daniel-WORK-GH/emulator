@@ -48,7 +48,31 @@ export class ChipScreen {
         }
     };
 
-    static clear(){
+    static drawByte(vx, vy, byte) {
+        let erased = false;
+
+        for (let i = 0; i < 8; i++) {
+            let x = (vx + i) % this.#width
+            let y = vy % this.#height
+
+            const bit = (byte >> (7 - i)) & 0B1;
+            
+            erased |= bit == this.#screen[y][x] && bit == 1
+
+            this.#screen[y][x] = bit != this.#screen[y][x] ? 1 : 0; 
+        }
+    }
+
+    static refresh() {
+        for (let i = 0; i < this.#height; i++) {
+            for(let j = 0; j < this.#width; j++) {
+                const pixel = this.#pixels[i][j];
+                pixel.style.backgroundColor = pixel == 1 ? 'white' : '#3d3d3d';
+            } 
+        }
+    }
+
+    static clear() {
         for (let i = 0; i < this.#height; i++) {
             for(let j = 0; j < this.#width; j++) {
                 const pixel = this.#pixels[i][j];

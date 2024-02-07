@@ -210,8 +210,28 @@ export class Chip8 {
                 this.#registers.set(nib2, rnd & lower)
                 break;
 
+            case 0xd: // Dxyn - DRW Vx, Vy, nibble
+                var i = this.#registers.get(this.I)
+                var vx = this.#registers.get(nib2)
+                var vy = this.#registers.get(nib3)
+                var erased = false;
+
+                for(; i < nib4; i++) {
+                    var byte = this.#memory.get(i)
+                    erased |= ChipScreen.drawByte(vx, vy + i, byte)
+                }
+
+                if(erased) this.#registers.set(15, 1)
+                else this.#registers.set(15, 0)
+                break;
+
             case 0xF:
                 switch(lower) { 
+                    case 0x07:
+                        var dt = this.#registers.get(this.DT)
+                        this.#registers.set(nib2, dt)
+                        break;
+
                     case 0x15: // Fx15 - LD DT, Vx
                         var vx = this.#registers.get(nib2)
                         this.#registers.set(this.DT, vx)
@@ -261,59 +281,17 @@ export class Chip8 {
                         }
                         console.warn('Might cause an error');
                         break;
-                }
 
+                    default: 
+                        console.error('Unknown instruction');
+                        break;
+                }
+                break;
+
+            default: 
+                console.error('Unknown instruction');
                 break;
         }
         this.#pc.inc()
     }
 }
-
-//#region
-// 00E0 - CLS ✅
-// 00EE - RET ❌
-// 0nnn - SYS addr ✅
-// 1nnn - JP addr ✅
-// 2nnn - CALL addr ❌
-// 3xkk - SE Vx, byte ✅
-// 4xkk - SNE Vx, byte ✅
-// 5xy0 - SE Vx, Vy ✅
-// 6xkk - LD Vx, byte ✅
-// 7xkk - ADD Vx, byte ✅
-// 8xy0 - LD Vx, Vy ✅ 
-// 8xy1 - OR Vx, Vy ✅
-// 8xy2 - AND Vx, Vy ✅
-// 8xy3 - XOR Vx, Vy ✅
-// 8xy4 - ADD Vx, Vy ✅
-// 8xy5 - SUB Vx, Vy ✅
-// 8xy6 - SHR Vx {, Vy} ✅
-// 8xy7 - SUBN Vx, Vy ✅
-// 8xyE - SHL Vx {, Vy} ✅
-// 9xy0 - SNE Vx, Vy ✅
-// Annn - LD I, addr ✅
-// Bnnn - JP V0, addr ✅
-// Cxkk - RND Vx, byte ✅
-// Dxyn - DRW Vx, Vy, nibble
-// Ex9E - SKP Vx
-// ExA1 - SKNP Vx
-// Fx07 - LD Vx, DT
-// Fx0A - LD Vx, K
-// Fx15 - LD DT, Vx ✅
-// Fx18 - LD ST, Vx ✅
-// Fx1E - ADD I, Vx ✅
-// Fx29 - LD F, Vx ✅
-// Fx33 - LD B, Vx ✅
-// Fx55 - LD [I], Vx ✅ / ❌
-// Fx65 - LD Vx, [I] ✅ / ❌
-// 3.2 - Super Chip-48 Instructions
-// 00Cn - SCD nibble 
-// 00FB - SCR
-// 00FC - SCL
-// 00FD - EXIT
-// 00FE - LOW
-// 00FF - HIGH
-// Dxy0 - DRW Vx, Vy, 0
-// Fx30 - LD HF, Vx
-// Fx75 - LD R, Vx
-// Fx85 - LD Vx, R 
-//#endregion
