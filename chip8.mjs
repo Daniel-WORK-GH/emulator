@@ -1,4 +1,5 @@
 import { Memory, PC, Registers } from "./components.mjs";
+import { ChipScreen } from "./screen.mjs";
 
 export class Chip8 {
     #memory;
@@ -15,10 +16,15 @@ export class Chip8 {
         //     "Vc", "Vd", "Ve", "Vf",
         // ])
 
+        /**
+         * Key for the I register
+         */
+        this.I = 20;
+
         this.#registers = new Registers(16, [
             0, 1, 2, 3, 4, 5, 6,
             7, 8, 9, 10, 11, 12,
-            13, 14, 15
+            13, 14, 15, this.I
         ])
 
         this.#pc = new PC(8, 2, 0xFF);
@@ -29,8 +35,6 @@ export class Chip8 {
         const upper = this.#memory.get(addr)
         const lower = this.#memory.get(addr + 1)
         const instruction = upper << 8 | lower
-
-        this.#pc.inc()
 
         return instruction;
     }
@@ -48,7 +52,49 @@ export class Chip8 {
         const nib3 = (instruction >> 4) & 0B1111
         const nib4 = instruction & 0B1111
 
+        if(instruction == 0x00e0) { // 00E0 - CLS
+            ChipScreen.clear()
+            this.#pc.inc()
+            return;
+        }
+        else if(instruction == 0x00ee) { // 00EE - RET
+            console.error('not imp');
+            return;
+        }
+
         switch(nib1) {
+            case 0: // 0nnn - SYS addr
+            case 1: // 1nnn - JP addr
+                this.#pc.set(instruction & 0x0FFF)
+                break;
+
+            case 3: // 3xkk - SE Vx, byte
+                var vx = this.#registers.get(nib2)
+                if(vx == lower) this.#pc.inc()
+                break;
+
+            case 4: // 4xkk - SNE Vx, byte
+                var vx = this.#registers.get(nib2)
+                if(vx != lower) this.#pc.inc()
+                break;
+
+            case 5: // 5xy0 - SE Vx, Vy
+                var vx = this.#registers.get(nib2)
+                var vy = this.#registers.get(nib3)
+
+                if(vx == vy) this.#pc.inc();
+                break;
+
+            case 6: // 6xkk - LD Vx, byte
+                var vx = this.#registers.get(nib2)
+                this.#registers.set(nib2, lower)
+                break;
+
+            case 7: // 7xkk - ADD Vx, byte
+                var vx = this.#registers.get(nib2)
+                this.#registers.set(nib2, vx + lower)
+                break;
+
             case 8: 
                 switch (nib4) {
                     case 0: // 8xy0 - LD Vx, Vy
@@ -138,21 +184,22 @@ export class Chip8 {
                 break;
 
         }
+        this.#pc.inc()
     }
 }
 
-//#region ✅
-// 00E0 - CLS
-// 00EE - RET
-// 0nnn - SYS addr
-// 1nnn - JP addr
-// 2nnn - CALL addr
-// 3xkk - SE Vx, byte
-// 4xkk - SNE Vx, byte
-// 5xy0 - SE Vx, Vy
-// 6xkk - LD Vx, byte
-// 7xkk - ADD Vx, byte
-// 8xy0 - LD Vx, Vy ✅
+//#region
+// 00E0 - CLS ✅
+// 00EE - RET ❌
+// 0nnn - SYS addr ✅
+// 1nnn - JP addr ✅
+// 2nnn - CALL addr ❌
+// 3xkk - SE Vx, byte ✅
+// 4xkk - SNE Vx, byte ✅
+// 5xy0 - SE Vx, Vy ✅
+// 6xkk - LD Vx, byte ✅
+// 7xkk - ADD Vx, byte ✅
+// 8xy0 - LD Vx, Vy ✅ 
 // 8xy1 - OR Vx, Vy ✅
 // 8xy2 - AND Vx, Vy ✅
 // 8xy3 - XOR Vx, Vy ✅
