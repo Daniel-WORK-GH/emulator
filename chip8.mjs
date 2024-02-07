@@ -41,13 +41,15 @@ export class Chip8 {
         this.DT = 21;
         this.ST = 22;
 
-        this.#registers = new Registers(16, [
+        this.#registers = new Registers(8, [
             0, 1, 2, 3, 4, 5, 6,
             7, 8, 9, 10, 11, 12,
             13, 14, 15, this.I, 
             this.DT, this.ST
         ])
 
+        this.#registers.setBits(this.I, 12)
+        
         this.#pc = new PC(16, 2, 0x200);
 
         this.#keyboard = new Keyboard([
@@ -98,7 +100,7 @@ export class Chip8 {
     run_instruction() {
         const instruction = this.#get_next_instructions()
 
-        console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
+        //console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
 
         // Get lower and upper bytes
         const upper = (instruction >> 8) & 0xFF 
@@ -121,7 +123,7 @@ export class Chip8 {
             var addr = this.#stack.get(this.#stackptr.get())
             this.#pc.set(addr)
 
-            console.warn('setting addr to : ' + addr);
+            //console.warn('setting addr to : ' + addr);
             return;
         }
 
@@ -143,8 +145,6 @@ export class Chip8 {
                 this.#pc.set(nnn)
 
                 this.#stackptr.set(this.#stackptr.get() + 1)
-                
-                console.warn(this.#stackptr.get());
                 return;
 
             case 3: // 3xkk - SE Vx, byte
@@ -210,7 +210,7 @@ export class Chip8 {
                       
                         this.#registers.set(nib2, vx + vy)
 
-                        if(vx + vy > 0xFFFF) this.#registers.set(15, 1)
+                        if(vx + vy > 0xFF) this.#registers.set(15, 1)
                         else this.#registers.set(15, 0)
                         break;
 
@@ -248,7 +248,7 @@ export class Chip8 {
                         var vx = this.#registers.get(nib2)
                         var vy = this.#registers.get(nib3)
 
-                        if(vx >= 0x4FFF) this.#registers.set(15, 1)
+                        if(vx >= 0x4F) this.#registers.set(15, 1)
                         else this.#registers.set(15, 0)
 
                         this.#registers.set(nib2, vx << 1)

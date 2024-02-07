@@ -96,6 +96,10 @@ export class NBitMap {
         }
     }
 
+    setBits(key, bits) {
+        this.#dict.set(key, new NBitNumber(bits))
+    }
+
     /**
      * Set value at key
      * @param {*} key 
