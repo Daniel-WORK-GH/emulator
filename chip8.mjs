@@ -78,14 +78,18 @@ export class Chip8 {
         }, 1 / 60 * 1000);
     }
 
-    load_program(program) {
-        getByteArray(program, (array) => {
-            let addr = 0x200;
+    get_memory() {
+        return this.#memory;
+    }
 
-            for(let i = 0; i < array.length; i++) {
-                this.#memory.set(addr + i, array[i])
-            }
-        })
+    async load_program(program) {
+        let array = await getByteArray(program)
+        
+        let addr = 0x200;
+
+        for(let i = 0; i < array.length; i++) {
+            this.#memory.set(addr + i, array[i])
+        }
     }
 
     #get_next_instructions() {
@@ -100,7 +104,7 @@ export class Chip8 {
     run_instruction() {
         const instruction = this.#get_next_instructions()
 
-        //console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
+        console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
 
         // Get lower and upper bytes
         const upper = (instruction >> 8) & 0xFF 
@@ -328,7 +332,7 @@ export class Chip8 {
                         this.#registers.set(nib2, dt)
                         break;
 
-                    case 0: // Fx0A - LD Vx, K
+                    case 0x0a: // Fx0A - LD Vx, K
                         if(this.#keyboard.waitPress()) {
                             var value = this.#keyboard.lastPress;
                             value = parseInt(value, 16)

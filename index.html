@@ -9,12 +9,48 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="navbar">
-        <h1 class="title">CHIP-8</h1>
-    </div>
-    <div class="container">
-        <!-- Here we will add divs representing our pixels -->
-    </div>
-    <script type="module" src="main.js"></script>
+    <nav>
+        <div class="row">
+            <a href="#">View opcode</a>
+            <a href="#">View code</a>
+        </div>
+
+        <script>
+            function rndhex(params) {
+                const num = Math.floor(Math.random() * 255); 
+                return num.toString(16)
+            }
+        </script>
+
+        <div class="opcodeTable">
+            <table id="hexcodeTable">
+                <tr>
+                    <script>
+                        for(let i = 0; i < 4096 / 16; i++) {
+                            document.writeln(`<td>${(i * 16).toString(16)}</td>`)
+                        }
+                    </script>
+                </tr>
+                <script>
+                    for(let r = 0; r < 16; r++) {
+                        document.writeln('<tr>')
+                        for(let i = 0; i < 4096 / 16; i++) {
+                            document.writeln(`<td class="hexcode">${rndhex()}</td>`)
+                        }
+                        document.writeln('</tr>')
+                    }
+                </script>
+            </table>
+        </div>
+    </nav>
+    <main>
+        <div class="navbar">
+            <h1 class="title">CHIP-8</h1>
+        </div>
+        <div class="container">
+            <!-- Here we will add divs representing our pixels -->
+        </div>
+        <script type="module" src="main.js"></script>
+    </main>
 </body>
 </html>

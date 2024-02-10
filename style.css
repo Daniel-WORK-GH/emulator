@@ -1,22 +1,26 @@
-*{
+:root {
+    --nav_width: 36em;
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body{
+html {
     height: 100%;
 }
 
-body{
+body {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    overflow-x: hidden;
     background-color: #2f4f4f;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    height: 100%;
 }
 
-.navbar, .container{
+.navbar, .container {
     background-color: rgb(28, 28, 28);
     width: 800px;
     border-radius: 3px;
@@ -29,7 +33,7 @@ body{
     user-select: none;
 }
 
-.navbar{
+.navbar {
     padding: 1em;
     margin-bottom: 1em;
     display: flex;
@@ -37,18 +41,18 @@ body{
     align-items: center;
 }
 
-.btn, input{
+.btn, input {
     height: 35px;
     padding: 0 1em;
 }
 
-.color{
+.color {
     padding: 0 .25em;
     width: 100px;
     margin: 0 1em;
 }
 
-.container{
+.container {
     --width: 64;
     --height: 32;
     height: 800px;
@@ -59,7 +63,115 @@ body{
     padding: 3px;
 }
 
-.pixel{
+.pixel {
     background-color: rgb(61, 61, 61);
     border-radius: 2px;
+}
+
+main {
+    padding: 40px 25px;
+    height: 100%;
+    
+    margin-left: var(--nav_width);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    min-width: fit-content;
+}
+
+nav {
+    background: rgb(28, 28, 28);
+    height: 100%;
+    position: absolute;
+    width: var(--nav_width);
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+}
+  
+nav a {
+    color: #eee;
+    padding: 12px 16px;
+    text-decoration: none;
+    -webkit-user-drag: none;
+}
+
+nav .row, .hexTitle {
+    width: 100%;
+    display: flex;
+    flex-direction:row;
+}
+
+nav .row * {
+    flex: 1;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    background-color: rgb(54, 54, 54);
+    color: #eee;
+    text-align: center;
+}
+
+
+.opcodeTable {
+    overflow: auto;
+    width: 100%;
+}
+
+table tr {
+	display: table-cell;
+}
+
+table td {
+    border-bottom: 1pt solid rgb(54, 54, 54);
+}
+
+table tr td {
+	display: block;
+}
+
+table {
+    width: 100%;
+    color: #eee;
+    text-align: center;
+
+    border-collapse: collapse
+}
+
+table * {
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    font-size: small;
+}
+
+table tr:nth-child(1) {  
+    width: 48px;
+}
+
+table tr:nth-of-type(4n + 2) {  
+    border-left: 1pt solid #575757;
+}
+
+
+.hexcode:hover {
+    background-color: rgba(0, 97, 157, 0.476);
+}
+
+/*___   Scroll bar ___*/
+
+div::-webkit-scrollbar {
+    width: 1em;
+    background-color: rgb(60, 60, 60);
+}
+
+div::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+div::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
 }

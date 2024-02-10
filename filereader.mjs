@@ -1,11 +1,9 @@
-export function getByteArray(filename, onload) {
+export async function getByteArray(filename) {
     var fileByteArray = [];
 
-    fetch(filename)
-    .then((res) => res.arrayBuffer())
-    .then((buffer) => {
-        fileByteArray = new Uint8Array(buffer)
-
-        onload(fileByteArray);
-    })
+    var buffer = await fetch(filename)
+    fileByteArray = await buffer.arrayBuffer();
+    fileByteArray = new Uint8Array(fileByteArray)
+    
+    return fileByteArray
 }
