@@ -11,8 +11,8 @@
 <body>
     <nav>
         <div class="row">
-            <a href="#">View opcode</a>
-            <a href="#">View code</a>
+            <a id="programTab" class="myBtn" href="#">View program</a>
+            <a id="opcodeTab" class="myBtn" href="#">View opcode</a>
         </div>
 
         <script>
@@ -22,7 +22,7 @@
             }
         </script>
 
-        <div class="opcodeTable">
+        <div id="opcodeTable" class="opcodeTable" style="display: none;">
             <table id="hexcodeTable">
                 <tr>
                     <script>
@@ -41,6 +41,16 @@
                     }
                 </script>
             </table>
+        </div>
+
+        <div id="programContainer" class="text_container">
+            <div id="line-numbers" class="text_container__lines"></div>
+            <textarea id="textarea" spellcheck="false" class="text_container__textarea"></textarea>
+        </div>
+
+        <div class="row forceBottom">
+            <a id="downloadBtn" class="myBtn" href="#">Download file</a>
+            <a id="loadchipBtn" class="myBtn" href="#">Load to chip</a>
         </div>
     </nav>
     <main>

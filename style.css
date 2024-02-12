@@ -1,5 +1,5 @@
 :root {
-    --nav_width: 36em;
+    --nav_width: 32em;
 }
 
 * {
@@ -156,9 +156,26 @@ table tr:nth-of-type(4n + 2) {
 }
 
 
-.hexcode:hover {
+.hexcode:not(.editing):hover {
     background-color: rgba(0, 97, 157, 0.476);
 }
+
+.editing { 
+    background-color: #a79c0079;
+}
+
+.invalid { 
+    background-color: #b9000079;
+}
+
+.myBtn:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.forceBottom {
+    margin-top: auto;
+}
+
 
 /*___   Scroll bar ___*/
 
@@ -174,4 +191,33 @@ div::-webkit-scrollbar-track {
 div::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
+}
+
+
+/*___   Text code block   ___*/
+
+.text_container {
+    background-color: inherit;
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+}
+.text_container__textarea {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    padding: 0.5rem;
+    width: 100%;
+    color: #eee;
+    font-size: larger;
+    resize:none;
+}
+.text_container__lines {
+    background-color: inherit;
+    padding: 0.5rem;
+    text-align: right;
+    overflow: hidden;
+    width: 48px;
+    color: #eee;
+    border-right: 1pt solid rgb(54, 54, 54);;
 }
