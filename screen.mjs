@@ -8,6 +8,12 @@ export class ChipScreen {
 
     static #pixels;
 
+    /**
+     * Create the screen object, handles drawing 
+     * to screen like in the original chip8
+     * @param {Number} width Width of the screen
+     * @param {Number} height Height of the screen
+     */
     static init(width = 64, height = 32){
         this.#width = width;
         this.#height = height;
@@ -21,6 +27,11 @@ export class ChipScreen {
         this.#populate(width, height);
     }
 
+    /**
+     * Fill the 'screen' with 'pixels'
+     * @param {Number} width Number of pixels [width]
+     * @param {Number} height Number of pixels [height]
+     */
     static #populate(width, height) {
         const pixelsize = this.#container.clientWidth / width;
     
@@ -48,6 +59,15 @@ export class ChipScreen {
         }
     };
 
+    /**
+     * Draw a byte value at (x, y) position,
+     * each bit will be xor'd into the screen
+     * @param {Number} vx X position
+     * @param {Number} vy Y position
+     * @param {Number} byte Byte to draw
+     * @returns {Boolean} Returns true if a pixel was
+     *      turned off and wasn't supposed to
+     */
     static drawByte(vx, vy, byte) {
         let erased = false;
 
@@ -65,6 +85,9 @@ export class ChipScreen {
         return erased
     }
 
+    /**
+     * Update the screen from the pixel array
+     */
     static refresh() {
         for (let i = 0; i < this.#height; i++) {
             for(let j = 0; j < this.#width; j++) {
@@ -74,6 +97,9 @@ export class ChipScreen {
         }
     }
 
+    /**
+     * Crear the data of the screen
+     */
     static clear() {
         for (let i = 0; i < this.#height; i++) {
             for(let j = 0; j < this.#width; j++) {
