@@ -26,13 +26,6 @@ export class Chip8 {
     constructor() {
         this.#memory = new Memory(8, 4096)
 
-        // this.#registers = new Registers(16,[
-        //     "V0", "V1", "V2", "V3",
-        //     "V4", "V5", "V6", "V7",
-        //     "V8", "V9", "Va", "Vb",
-        //     "Vc", "Vd", "Ve", "Vf",
-        // ])
-
         /**
          * Key for the I register
          */
@@ -78,6 +71,24 @@ export class Chip8 {
         }, 1 / 60 * 1000);
     }
 
+    restart() {
+        const regs = [
+            0, 1, 2, 3, 4, 5, 6,
+            7, 8, 9, 10, 11, 12,
+            13, 14, 15, this.I, 
+            this.DT, this.ST
+        ]
+
+        for(let i = 0; i < regs.length; i++) {
+            const reg = regs[i];
+
+            this.#registers.set(reg, 0)
+        }
+
+        this.#pc.set(0x200)
+        ChipScreen.clear();
+    }
+
     get_memory() {
         return this.#memory;
     }
@@ -104,7 +115,7 @@ export class Chip8 {
     run_instruction() {
         const instruction = this.#get_next_instructions()
 
-        console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
+        //console.log(`${this.#pc.get()} running : ` + instruction.toString(16));
 
         // Get lower and upper bytes
         const upper = (instruction >> 8) & 0xFF 
