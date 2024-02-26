@@ -102,6 +102,14 @@ export class Chip8 {
             this.#memory.set(addr + i, array[i])
         }
     }
+    
+    load_code(hexcode) {
+        let addr = 0x200;
+
+        for(let i = 0; i < hexcode.length; i++) {
+            this.#memory.set(addr + i, hexcode[i])
+        }
+    }
 
     #get_next_instructions() {
         const addr = this.#pc.get()

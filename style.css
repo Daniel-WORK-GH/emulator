@@ -83,7 +83,7 @@ main {
 }
 
 nav {
-    background: rgb(28, 28, 28);
+    background: rgb(30, 30, 30);
     height: 100%;
     position: absolute;
     width: var(--nav_width);
@@ -217,7 +217,7 @@ div::-webkit-scrollbar-thumb {
     padding: 0.5rem;
     text-align: right;
     overflow: hidden;
-    width: 48px;
+    width: 56px;
     color: #eee;
     border-right: 1pt solid rgb(54, 54, 54);;
 }
